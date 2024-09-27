@@ -198,7 +198,7 @@ public class IntroSpringDataJpaApplication {
 			Address marvinAddress = new Address();
 			marvinAddress.setCountry("Guatemala");
 			marvinAddress.setAddress("Calle principal, Aldea Argueta, Solola");
-			marvin.setAddress(marvinAddress);
+			//marvin.setAddress(marvinAddress);
 
 			Customer ramon = new Customer();
 			ramon.setName("Ramon Hernandez");
@@ -208,7 +208,7 @@ public class IntroSpringDataJpaApplication {
 			Address ramonAddress = new Address();
 			ramonAddress.setCountry("Guatemala");
 			ramonAddress.setAddress("Zona 1, 20-40, Solola");
-			ramon.setAddress(ramonAddress);
+			//ramon.setAddress(ramonAddress);
 
 			Customer luis = new Customer();
 			luis.setName("Luis Marquez");
@@ -218,21 +218,43 @@ public class IntroSpringDataJpaApplication {
 			Address luisAddress = new Address();
 			luisAddress.setCountry("Mexico");
 			luisAddress.setAddress("Casa 456, colonia 123, Ciudad de Mexico");
-			luis.setAddress(luisAddress);
+			//luis.setAddress(luisAddress);
 			List<Customer> customers = List.of(marvin, ramon, luis);
 			customerCrudRepository.saveAll(customers);
 
 		};
 	}
 
-	@Bean
-	public CommandLineRunner testCrudAddress(AddressCrudRepository addressCrudRepository){
-		return args -> {
-			addressCrudRepository.findAll()
-					.forEach(each -> {
-						System.out.println(each.getAddress() + " - " + each.getCustomer().getUsername());
-					});
-		};
+//	@Bean
+//	public CommandLineRunner testCrudAddress(AddressCrudRepository addressCrudRepository){
+//		return args -> {
+//			addressCrudRepository.findAll()
+//					.forEach(each -> {
+//						System.out.println(each.getAddress() + " - " + each.getCustomer().getUsername());
+//					});
+//		};
+//	}
 
+	@Bean
+	public CommandLineRunner testRelationOneToMany(){
+		return args -> {
+			Customer marvin = new Customer();
+			marvin.setName("Marvin Menchu");
+			marvin.setPassword("1234");
+			marvin.setUsername("marvin");
+
+			Address marvinAddress = new Address();
+			marvinAddress.setCountry("Guatemala");
+			marvinAddress.setAddress("Calle principal, Aldea Argueta, Solola");
+
+			Address marvinAddress2 = new Address();
+			marvinAddress2.setCountry("EEUU");
+			marvinAddress2.setAddress("Manhattan, New York");
+			marvin.setAddresses(List.of(marvinAddress, marvinAddress2));
+
+			List<Customer> customers = List.of(marvin);
+			customerCrudRepository.saveAll(customers);
+
+		};
 	}
 }
