@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
 public class IntroSpringDataJpaApplication {
@@ -61,7 +60,7 @@ public class IntroSpringDataJpaApplication {
 		};
 	}
 
-	@Bean
+	//@Bean
 	public CommandLineRunner validateEntityManager(EntityManager em) {
 		return args -> {
 			System.out.println("\n Probando entityManager");
@@ -75,7 +74,7 @@ public class IntroSpringDataJpaApplication {
 
 	}
 
-	@Bean
+	//@Bean
 	public CommandLineRunner validateCrudRepository() {
 		return args -> {
 			Customer marvin = new Customer();
@@ -121,6 +120,60 @@ public class IntroSpringDataJpaApplication {
 			customerCrudRepository.findAll().forEach(customer -> {
 				System.out.println("Cliente: " + customer);
 			});
+		};
+	}
+
+	@Bean
+	public CommandLineRunner testQueryMethodCommand() {
+		return args -> {
+			Customer marvin = new Customer();
+			marvin.setName("Marvin Menchu");
+			marvin.setPassword("1234");
+			marvin.setUsername("marvin");
+
+			Customer ramon = new Customer();
+			ramon.setName("Ramon Hernandez");
+			ramon.setPassword("1234");
+			ramon.setUsername("ramon");
+
+			Customer luis = new Customer();
+			luis.setName("Luis Marquez");
+			luis.setPassword("1234");
+			luis.setUsername("luis");
+
+			Customer luis2 = new Customer();
+			luis2.setName("Luis Cañas");
+			luis2.setPassword("1234");
+			luis2.setUsername("luisc");
+
+			List<Customer> customers = List.of(marvin, ramon, luis, luis2);
+
+			System.out.println("Se guardaron tres entidades");
+			customerCrudRepository.saveAll(customers);
+
+			// pruebas video 1
+//			System.out.println("\n probando query method: searchByUsername");
+//			System.out.println(customerCrudRepository.searchByUsername("luis"));;
+//
+//			System.out.println("\n probando query method: findByUsername");
+//			System.out.println(customerCrudRepository.findByUsername("luisc"));;
+
+			// pruebas video 2
+			System.out.println("\n Nombres que contienen la letra o");
+			customerCrudRepository.findByNameContaining("o")
+					.forEach(System.out::println);
+
+			System.out.println("\n Nombres que empiece la letra M");
+			customerCrudRepository.queryByNameStartingWith("m")
+					.forEach(System.out::println);
+
+			System.out.println("\n Nombres que terminen con la letra s");
+			customerCrudRepository.readByNameIsEndingWith("s")
+					.forEach(System.out::println);
+
+			System.out.println("\n Nombres que contienen as y id mayor a 3");
+			customerCrudRepository.findByNameContainingAndIdGreaterThanOrderByIdDesc("a", 2L)
+					.forEach(System.out::println);
 		};
 	}
 }
