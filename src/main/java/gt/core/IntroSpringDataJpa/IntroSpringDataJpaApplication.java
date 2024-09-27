@@ -29,7 +29,7 @@ public class IntroSpringDataJpaApplication {
 		SpringApplication.run(IntroSpringDataJpaApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
 	public CommandLineRunner validatorDSCommand(DataSource ds) {
 		return args -> {
 
@@ -44,7 +44,7 @@ public class IntroSpringDataJpaApplication {
 		};
 	}
 
-	@Bean
+	//@Bean
 	public CommandLineRunner validateEntityManagerFactory(EntityManagerFactory emf) {
 		return args -> {
 			System.out.println("\n Probando entityManagerFactory");
@@ -173,6 +173,14 @@ public class IntroSpringDataJpaApplication {
 
 			System.out.println("\n Nombres que contienen as y id mayor a 3");
 			customerCrudRepository.findByNameContainingAndIdGreaterThanOrderByIdDesc("a", 2L)
+					.forEach(System.out::println);
+
+			System.out.println("\n Nombres que contienen hu y id mayor a 3");
+			customerCrudRepository.findAllByNameAndIdGreaterThan("hu", 0L)
+					.forEach(System.out::println);
+
+			System.out.println("\n Nombres que contienen hu y id mayor a 3 usando SQL Nativo");
+			customerCrudRepository.findAllByNameAndIdGreaterThanUsingNativeSQL("a", 0L)
 					.forEach(System.out::println);
 		};
 	}
