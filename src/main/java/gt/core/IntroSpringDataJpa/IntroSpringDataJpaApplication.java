@@ -1,5 +1,7 @@
 package gt.core.IntroSpringDataJpa;
 
+import gt.core.IntroSpringDataJpa.persistence.entity.Customer;
+import gt.core.IntroSpringDataJpa.persistence.repository.CustomerCrudRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 public class IntroSpringDataJpaApplication {
 
 	@Autowired
 	private DataSource ds;
+
+	@Autowired
+	private CustomerCrudRepository customerCrudRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(IntroSpringDataJpaApplication.class, args);
@@ -67,5 +73,31 @@ public class IntroSpringDataJpaApplication {
 			});
 		};
 
+	}
+
+	@Bean
+	public CommandLineRunner validateCrudRepository() {
+		return args -> {
+//			Customer marvin = new Customer();
+//			marvin.setName("Marvin");
+//			marvin.setPassword("1234");
+//			customerCrudRepository.save(marvin);
+//			System.out.println("Se guardo el cliente: " + marvin);
+//
+//			System.out.println("Impriendo todos los clientes");
+//			customerCrudRepository.findAll().forEach(customer -> {
+//				System.out.println("Cliente: " + customer);
+//			});
+
+			System.out.println("Buscando cliente con id 1");
+			Optional<Customer> customer = customerCrudRepository.findById(1L);
+			customer.ifPresent(System.out::println);
+
+			System.out.println("Eliminando cliente con id 1");
+			customerCrudRepository.deleteById(1L);
+
+			System.out.println("Buscando cliente con id 1");
+			customerCrudRepository.findById(1L).ifPresent(System.out::println);
+		};
 	}
 }
