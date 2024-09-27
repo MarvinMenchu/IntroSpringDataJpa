@@ -1,6 +1,8 @@
 package gt.core.IntroSpringDataJpa;
 
+import gt.core.IntroSpringDataJpa.persistence.entity.Address;
 import gt.core.IntroSpringDataJpa.persistence.entity.Customer;
+import gt.core.IntroSpringDataJpa.persistence.repository.AddressCrudRepository;
 import gt.core.IntroSpringDataJpa.persistence.repository.CustomerCrudRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -123,7 +125,7 @@ public class IntroSpringDataJpaApplication {
 		};
 	}
 
-	@Bean
+	//@Bean
 	public CommandLineRunner testQueryMethodCommand() {
 		return args -> {
 			Customer marvin = new Customer();
@@ -183,5 +185,54 @@ public class IntroSpringDataJpaApplication {
 			customerCrudRepository.findAllByNameAndIdGreaterThanUsingNativeSQL("a", 0L)
 					.forEach(System.out::println);
 		};
+	}
+
+	//@Bean
+	public CommandLineRunner testRelationOneToOne(){
+		return args -> {
+			Customer marvin = new Customer();
+			marvin.setName("Marvin Menchu");
+			marvin.setPassword("1234");
+			marvin.setUsername("marvin");
+
+			Address marvinAddress = new Address();
+			marvinAddress.setCountry("Guatemala");
+			marvinAddress.setAddress("Calle principal, Aldea Argueta, Solola");
+			marvin.setAddress(marvinAddress);
+
+			Customer ramon = new Customer();
+			ramon.setName("Ramon Hernandez");
+			ramon.setPassword("1234");
+			ramon.setUsername("ramon");
+
+			Address ramonAddress = new Address();
+			ramonAddress.setCountry("Guatemala");
+			ramonAddress.setAddress("Zona 1, 20-40, Solola");
+			ramon.setAddress(ramonAddress);
+
+			Customer luis = new Customer();
+			luis.setName("Luis Marquez");
+			luis.setPassword("1234");
+			luis.setUsername("luis");
+
+			Address luisAddress = new Address();
+			luisAddress.setCountry("Mexico");
+			luisAddress.setAddress("Casa 456, colonia 123, Ciudad de Mexico");
+			luis.setAddress(luisAddress);
+			List<Customer> customers = List.of(marvin, ramon, luis);
+			customerCrudRepository.saveAll(customers);
+
+		};
+	}
+
+	@Bean
+	public CommandLineRunner testCrudAddress(AddressCrudRepository addressCrudRepository){
+		return args -> {
+			addressCrudRepository.findAll()
+					.forEach(each -> {
+						System.out.println(each.getAddress() + " - " + each.getCustomer().getUsername());
+					});
+		};
+
 	}
 }

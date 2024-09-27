@@ -18,6 +18,10 @@ public class Customer {
     @Column(name = "contrasena")
     private String password;
 
+    @OneToOne(targetEntity = Address.class, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "id_direccion")
+    private Address address;
+
     public Long getId() {
         return id;
     }
@@ -48,6 +52,14 @@ public class Customer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     @Override
