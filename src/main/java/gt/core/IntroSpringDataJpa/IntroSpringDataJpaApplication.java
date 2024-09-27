@@ -78,26 +78,49 @@ public class IntroSpringDataJpaApplication {
 	@Bean
 	public CommandLineRunner validateCrudRepository() {
 		return args -> {
-//			Customer marvin = new Customer();
-//			marvin.setName("Marvin");
-//			marvin.setPassword("1234");
-//			customerCrudRepository.save(marvin);
-//			System.out.println("Se guardo el cliente: " + marvin);
-//
-//			System.out.println("Impriendo todos los clientes");
-//			customerCrudRepository.findAll().forEach(customer -> {
-//				System.out.println("Cliente: " + customer);
-//			});
+			Customer marvin = new Customer();
+			marvin.setName("Marvin");
+			marvin.setPassword("1234");
 
-			System.out.println("Buscando cliente con id 1");
-			Optional<Customer> customer = customerCrudRepository.findById(1L);
-			customer.ifPresent(System.out::println);
+			Customer ramon = new Customer();
+			ramon.setName("Ramon");
+			ramon.setPassword("1234");
+
+			Customer luis = new Customer();
+			luis.setName("Luis");
+			luis.setPassword("1234");
+
+			List<Customer> customers = List.of(marvin, ramon, luis);
+
+			System.out.println("Se guardaron tres entidades");
+			customerCrudRepository.saveAll(customers);
+
+			System.out.println("Buscando cliente Marvin");
+			customerCrudRepository.findById(1L)
+					.ifPresent(each -> {
+						each.setName("Marvin Menchu");
+						each.setPassword("85008500");
+						customerCrudRepository.save(each);
+					});
+
+			System.out.println("Buscando cliente Ramon");
+			customerCrudRepository.findById(2L).ifPresent(System.out::println);
+
+			System.out.println("Buscando cliente Luis");
+			customerCrudRepository.findById(3L).ifPresent(System.out::println);
+
+			System.out.println("Impriendo todos los clientes");
+			customerCrudRepository.findAll().forEach(customer -> {
+				System.out.println("Cliente: " + customer);
+			});
 
 			System.out.println("Eliminando cliente con id 1");
-			customerCrudRepository.deleteById(1L);
+			customerCrudRepository.deleteById(2L);
 
-			System.out.println("Buscando cliente con id 1");
-			customerCrudRepository.findById(1L).ifPresent(System.out::println);
+			System.out.println("Impriendo todos los clientes");
+			customerCrudRepository.findAll().forEach(customer -> {
+				System.out.println("Cliente: " + customer);
+			});
 		};
 	}
 }
