@@ -27,6 +27,9 @@ public class IntroSpringDataJpaApplication {
 	@Autowired
 	private CustomerCrudRepository customerCrudRepository;
 
+	@Autowired
+	private AddressCrudRepository addressCrudRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(IntroSpringDataJpaApplication.class, args);
 	}
@@ -246,15 +249,83 @@ public class IntroSpringDataJpaApplication {
 			Address marvinAddress = new Address();
 			marvinAddress.setCountry("Guatemala");
 			marvinAddress.setAddress("Calle principal, Aldea Argueta, Solola");
+			//marvinAddress.setCustomer(marvin);
 
 			Address marvinAddress2 = new Address();
 			marvinAddress2.setCountry("EEUU");
 			marvinAddress2.setAddress("Manhattan, New York");
-			marvin.setAddresses(List.of(marvinAddress, marvinAddress2));
+			//marvinAddress2.setCustomer(marvin);
+			//marvin.setAddresses(List.of(marvinAddress, marvinAddress2));
 
-			List<Customer> customers = List.of(marvin);
-			customerCrudRepository.saveAll(customers);
+			//List<Customer> customers = List.of(marvin);
 
+			marvin.addAddress(marvinAddress);
+			marvin.addAddress(marvinAddress2);
+
+			Customer luis = new Customer();
+			luis.setName("Luis Marquez");
+			luis.setPassword("1234");
+			luis.setUsername("mluis");
+
+			Address luisAddress = new Address();
+			luisAddress.setCountry("EEUU");
+			luisAddress.setAddress("Manhattan, New York");
+			luis.addAddress(luisAddress);
+
+
+
+			//customerCrudRepository.save(marvin);
+			//customerCrudRepository.save(luis);
+
+		};
+	}
+
+	@Bean
+	public CommandLineRunner testRelationManyToOneRelationShipCommand(AddressCrudRepository addressCrudRepository){
+		return args -> {
+			System.out.println("\nProbando relaciones bidireccionales entre address y customer\n");
+			addressCrudRepository.findAll()
+					.forEach(address -> {
+						String mensaje = "Direccion: " + address.getAddress() + " - Cliente: " + address.getCustomer().getUsername();
+						System.out.println(mensaje);
+					});
+
+			System.out.println("\nProbando relaciones bidireccionales entre customer y address\n");
+			customerCrudRepository.findAll()
+					.forEach(customer -> {
+						String mensaje = "Cliente: " + customer.getUsername() + ", cant. direcciones: " + customer.getAddresses().size();
+						System.out.println(mensaje);
+					});
+
+		};
+	}
+
+	@Bean
+	public CommandLineRunner testQueryMethodsAndJPQLExamplesCommand(){
+		return args -> {
+			System.out.println("\n Buscando clientes por pais EEUU");
+			customerCrudRepository.findByAddressesCountry("EEUU")
+					.forEach(customer -> {
+						System.out.println("Cliente: " + customer.getUsername());
+					});
+
+			System.out.println("\n Buscando clientes por pais EEUU utilizando jpql");
+			customerCrudRepository.findByCustomerFrom("EEUU")
+					.forEach(customer -> {
+						System.out.println("Cliente: " + customer.getUsername());
+					});
+
+			System.out.println("\n Buscando direcciones cuyo nombre del cliente termina en ?: utilizando query methods");
+			addressCrudRepository.findByCustomerNameEndsWith("u")
+					.forEach(address -> {
+						System.out.println("Direccion: " + address.getAddress());
+					});
+
+			System.out.println("\n Buscando direcciones cuyo nombre del cliente termina en ?: utilizando JPQL");
+			addressCrudRepository.findByCustomerEndsWith("z")
+					.forEach(address -> {
+						System.out.println("Direccion: " + address.getAddress());
+					});
 		};
 	}
 }
